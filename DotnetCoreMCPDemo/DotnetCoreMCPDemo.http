@@ -1,0 +1,6 @@
+@DotnetCoreMCPDemo_HostAddress = http://localhost:5209
+
+GET {{DotnetCoreMCPDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
