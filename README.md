@@ -16,16 +16,13 @@ It demonstrates how to use MCP to bridge **GitHub data** (commits, pull requests
 
 ## 📂 Project Structure
 GithubMCPDemo/
+
 ├── GithubMCPDemo.csproj # Project file
 ├── Program.cs # Entry point
 ├── Services/ # MCP server logic
 ├── Models/ # Data models for GitHub responses
 ├── Dockerfile # Docker build instructions
 ├── README.md # This file
-
-yaml
-Kopyala
-Düzenle
 
 ---
 
@@ -39,8 +36,7 @@ Düzenle
 
 ## ⚙️ Setup
 
-### 1️⃣ Clone the Repository
-```bash
+1️⃣ Clone the Repository
 git clone https://github.com/mustafaalkan64/GithubMCPDemo.git
 cd GithubMCPDemo
 
