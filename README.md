@@ -42,7 +42,6 @@ GithubMCPDemo/
 
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/1.png)
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/3.png)
-![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/4.png)
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/5.png)
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/6.png)
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/7.png)
