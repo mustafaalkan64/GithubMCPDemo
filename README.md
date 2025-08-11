@@ -40,6 +40,7 @@ GithubMCPDemo/
 
 ## Demo
 
+![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/8.png)
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/1.png)
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/3.png)
 ![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/5.png)
