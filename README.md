@@ -1,4 +1,4 @@
-# Github MCP Demo
+# Github MCP AI Integration and AI Agent
 
 **Github MCP Demo** is a sample implementation of a **Model Context Protocol (MCP) server** for GitHub that integrates with **OpenAI** to enable natural-language interactions with GitHub repositories.  
 It demonstrates how to use MCP to bridge **GitHub data** (commits, pull requests, issues, repository content) with **chat-based AI completion**.
