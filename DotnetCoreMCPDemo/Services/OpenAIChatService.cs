@@ -3,6 +3,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.Extensions.Options;
 using System.ComponentModel;
 using System.Text.Json;
+using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace DotnetCoreMCPDemo.Services;
 
@@ -34,6 +35,8 @@ public class OpenAIChatService : IAIChatService
 
     public async Task<string> ChatWithMcpToolsAsync(string userMessage, CancellationToken ct = default)
     {
+        #region Agent çalıştırılıyor.
+        var chatHistory = new ChatHistory();
         // MCP araçlarını Semantic Kernel fonksiyonları olarak kaydet
         await RegisterMcpToolsAsync(ct);
 
@@ -49,7 +52,7 @@ Kullanıcının GitHub repoları hakkındaki sorularını yanıtlamak için mevc
 Türkçe yanıt ver ve kullanıcıya yardımcı ol.
 
 Mevcut araçlar:
-- search_repositories: GitHub'da repo arama (q parametresi gerekli)
+- search_repositories: GitHub'da repo arama (query parametresi gerekli)
 - search_users: GitHub'da kullanıcı arama (q parametresi gerekli)
 - get_repository: Belirli bir repo hakkında detay (owner ve repo parametreleri gerekli)
 
@@ -59,7 +62,9 @@ Eğer araç çağrısında hata alırsan, hatayı kullanıcıya açıkla ve alte
         var fullPrompt = $"{systemPrompt}\n\nKullanıcı sorusu: {userMessage}";
 
         var result = await _kernel.InvokePromptAsync(fullPrompt, new(settings), cancellationToken: ct);
+        chatHistory.AddAssistantMessage(result.GetValue<string>());
         return result.GetValue<string>() ?? "Yanıt alınamadı.";
+        #endregion
     }
 
     private async Task RegisterMcpToolsAsync(CancellationToken ct)
@@ -68,9 +73,18 @@ Eğer araç çağrısında hata alırsan, hatayı kullanıcıya açıkla ve alte
 
         foreach (var toolName in toolNames)
         {
+            var pluginName = $"mcp_{toolName}";
+
+            // Check if plugin already exists
+            if (_kernel.Plugins.Any(p => p.Name == pluginName))
+            {
+                Console.WriteLine($"MCP plugin '{pluginName}' already exists, skipping...");
+                continue;
+            }
+
             // Her MCP aracını Semantic Kernel fonksiyonu olarak kaydet
             var mcpFunction = CreateMcpFunction(toolName, ct);
-            _kernel.Plugins.AddFromFunctions($"mcp_{toolName}", [mcpFunction]);
+            _kernel.Plugins.AddFromFunctions(pluginName, [mcpFunction]);
         }
     }
 
