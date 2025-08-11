@@ -1,5 +1,7 @@
 using DotnetCoreMCPDemo.Services;
+using DotnetCoreMCPDemo.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace DotnetCoreMCPDemo.Controllers;
 
@@ -16,7 +18,6 @@ public class GithubController : ControllerBase
 
     [HttpGet("repos")]
     public async Task<IActionResult> GetRepos(CancellationToken ct)
-
     {
         var result = await _mcp.ListRepositoriesAsync(ct);
         return Ok(result);
@@ -27,6 +28,5 @@ public class GithubController : ControllerBase
     {
         var tools = await _mcp.ListToolNamesAsync(ct);
         return Ok(tools);
-
     }
 }

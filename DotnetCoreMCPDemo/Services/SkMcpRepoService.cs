@@ -1,6 +1,7 @@
 using ModelContextProtocol.Client;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
+using ModelContextProtocol.Protocol;
 
 namespace DotnetCoreMCPDemo.Services;
 
@@ -61,6 +62,13 @@ public class SkMcpRepoService : IMcpRepoService, IAsyncDisposable
         return tools.Select(t => t.Name).ToArray();
     }
 
+    public async Task<IList<McpClientTool>?> ListToolsWithSchemaAsync(CancellationToken ct = default)
+    {
+        var client = await GetClientAsync(ct);
+        var tools = await client.ListToolsAsync();
+        return tools;
+    }
+
     public async Task<object?> ListRepositoriesAsync(CancellationToken ct = default)
     {
         var client = await GetClientAsync(ct);
@@ -77,8 +85,7 @@ public class SkMcpRepoService : IMcpRepoService, IAsyncDisposable
 
         var args = NormalizeArguments(_options.RepoListArguments) ?? new Dictionary<string, object?>();
         var result = await client.CallToolAsync(toolName!, args);
-        var content = result.Content;
-        return content;
+        return result.Content;
     }
 
     public async Task<object?> CallToolAsync(string toolName, Dictionary<string, object?>? arguments = null, CancellationToken ct = default)
@@ -87,9 +94,56 @@ public class SkMcpRepoService : IMcpRepoService, IAsyncDisposable
             throw new ArgumentException("Tool adı boş olamaz.", nameof(toolName));
 
         var client = await GetClientAsync(ct);
+        
+        // Get tool schema to validate required parameters
+        var tools = await client.ListToolsAsync();
+        var tool = tools.FirstOrDefault(t => string.Equals(t.Name, toolName, StringComparison.OrdinalIgnoreCase));
+        
+        if (tool == null)
+        {
+            throw new ArgumentException($"Araç bulunamadı: {toolName}. Mevcut araçlar: {string.Join(", ", tools.Select(t => t.Name))}");
+        }
+
         var args = NormalizeArguments(arguments) ?? new Dictionary<string, object?>();
+        
+        // Add default values for common missing parameters based on tool name
+        args = AddDefaultParametersForTool(toolName, args);
+        
         var result = await client.CallToolAsync(toolName, args);
         return result.Content;
+    }
+
+    private static Dictionary<string, object?> AddDefaultParametersForTool(string toolName, Dictionary<string, object?> args)
+    {
+        var result = new Dictionary<string, object?>(args, StringComparer.OrdinalIgnoreCase);
+        
+        switch (toolName.ToLowerInvariant())
+        {
+            case "search_users":
+                if (!result.ContainsKey("q"))
+                {
+                    // If no query provided, use a default or the first available parameter
+                    result["q"] = result.ContainsKey("user") ? result["user"] : "mustafaalkan64";
+                }
+                break;
+                
+            case "search_repositories":
+                if (!result.ContainsKey("q") && !result.ContainsKey("query"))
+                {
+                    result["q"] = result.ContainsKey("user") ? $"user:{result["user"]}" : "user:mustafaalkan64";
+                }
+                break;
+                
+            case "get_repository":
+                // Ensure owner and repo are provided
+                if (!result.ContainsKey("owner"))
+                {
+                    result["owner"] = "mustafaalkan64"; // default owner
+                }
+                break;
+        }
+        
+        return result;
     }
 
     private static Dictionary<string, object?>? NormalizeArguments(Dictionary<string, object?>? input)

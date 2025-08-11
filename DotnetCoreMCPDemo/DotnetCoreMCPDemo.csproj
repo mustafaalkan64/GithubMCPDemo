@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.30.0" />
   </ItemGroup>
   
+  <ItemGroup>
+    <Folder Include="SS\" />
+  </ItemGroup>
+  
 </Project>
