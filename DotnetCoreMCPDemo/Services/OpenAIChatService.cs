@@ -54,6 +54,7 @@ Türkçe yanıt ver ve kullanıcıya yardımcı ol.
 Mevcut araçlar:
 - search_repositories: GitHub'da repo arama (query parametresi gerekli)
 - search_users: GitHub'da kullanıcı arama (q parametresi gerekli)
+- list_commits: Belirli bir repo için commit listesi (owner ve repo parametreleri gerekli)
 - get_repository: Belirli bir repo hakkında detay (owner ve repo parametreleri gerekli)
 
 Kullanıcının sorusuna göre uygun aracı seç ve çağır, sonucu anlamlı şekilde özetle.
@@ -157,6 +158,29 @@ Eğer araç çağrısında hata alırsan, hatayı kullanıcıya açıkla ve alte
                     }
                 },
                 functionName: "get_repository",
+                description: "Belirli bir GitHub repository'sinin detaylarını getirir. owner ve repo parametreleri zorunludur"
+            ),
+
+            "list_commits" => KernelFunctionFactory.CreateFromMethod(
+                method: async (string owner, string repo) =>
+                {
+                    try
+                    {
+                        var args = new Dictionary<string, object?>
+                        {
+                            ["owner"] = owner,
+                            ["repo"] = repo,
+                            ["branch"] = "main" // veya istediğin branch
+                        };
+                        var result = await _mcpService.CallToolAsync(toolName, args, ct);
+                        return FormatRepositoryDetail(result);
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"Repository detay hatası: {ex.Message}";
+                    }
+                },
+                functionName: "list_commits",
                 description: "Belirli bir GitHub repository'sinin detaylarını getirir. owner ve repo parametreleri zorunludur"
             ),
 
