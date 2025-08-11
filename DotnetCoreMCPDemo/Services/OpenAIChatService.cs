@@ -55,6 +55,7 @@ Mevcut araçlar:
 - search_repositories: GitHub'da repo arama (query parametresi gerekli)
 - search_users: GitHub'da kullanıcı arama (q parametresi gerekli)
 - list_commits: Belirli bir repo için commit listesi (owner ve repo parametreleri gerekli)
+- list_issues: Belirli bir repo için issue listesi (owner ve repo parametreleri gerekli)
 - get_repository: Belirli bir repo hakkında detay (owner ve repo parametreleri gerekli)
 
 Kullanıcının sorusuna göre uygun aracı seç ve çağır, sonucu anlamlı şekilde özetle.
@@ -96,21 +97,16 @@ Eğer araç çağrısında hata alırsan, hatayı kullanıcıya açıkla ve alte
             "search_repositories" => KernelFunctionFactory.CreateFromMethod(
                 method: async (string q, int per_page = 10, int page = 1) =>
                 {
-                    try
+
+                    var args = new Dictionary<string, object?>
                     {
-                        var args = new Dictionary<string, object?>
-                        {
-                            ["query"] = q,
-                            ["per_page"] = per_page,
-                            ["page"] = page
-                        };
-                        var result = await _mcpService.CallToolAsync(toolName, args, ct);
-                        return FormatRepositoryResults(result);
-                    }
-                    catch (Exception ex)
-                    {
-                        return $"Repository arama hatası: {ex.Message}";
-                    }
+                        ["query"] = q,
+                        ["per_page"] = per_page,
+                        ["page"] = page
+                    };
+                    var result = await _mcpService.CallToolAsync(toolName, args, ct);
+                    return FormatRepositoryResults(result);
+
                 },
                 functionName: "search_repositories",
                 description: "GitHub'da repository arar. q parametresi zorunludur (örn: 'user:kullaniciadi' veya 'dotnet core')"
@@ -119,21 +115,16 @@ Eğer araç çağrısında hata alırsan, hatayı kullanıcıya açıkla ve alte
             "search_users" => KernelFunctionFactory.CreateFromMethod(
                 method: async (string q, int per_page = 10, int page = 1) =>
                 {
-                    try
+
+                    var args = new Dictionary<string, object?>
                     {
-                        var args = new Dictionary<string, object?>
-                        {
-                            ["q"] = q,
-                            ["per_page"] = per_page,
-                            ["page"] = page
-                        };
-                        var result = await _mcpService.CallToolAsync(toolName, args, ct);
-                        return FormatUserResults(result);
-                    }
-                    catch (Exception ex)
-                    {
-                        return $"Kullanıcı arama hatası: {ex.Message}";
-                    }
+                        ["q"] = q,
+                        ["per_page"] = per_page,
+                        ["page"] = page
+                    };
+                    var result = await _mcpService.CallToolAsync(toolName, args, ct);
+                    return FormatUserResults(result);
+
                 },
                 functionName: "search_users",
                 description: "GitHub'da kullanıcı arar. q parametresi zorunludur"
@@ -142,20 +133,15 @@ Eğer araç çağrısında hata alırsan, hatayı kullanıcıya açıkla ve alte
             "get_repository" => KernelFunctionFactory.CreateFromMethod(
                 method: async (string owner, string repo) =>
                 {
-                    try
+
+                    var args = new Dictionary<string, object?>
                     {
-                        var args = new Dictionary<string, object?>
-                        {
-                            ["owner"] = owner,
-                            ["repo"] = repo
-                        };
-                        var result = await _mcpService.CallToolAsync(toolName, args, ct);
-                        return FormatRepositoryDetail(result);
-                    }
-                    catch (Exception ex)
-                    {
-                        return $"Repository detay hatası: {ex.Message}";
-                    }
+                        ["owner"] = owner,
+                        ["repo"] = repo
+                    };
+                    var result = await _mcpService.CallToolAsync(toolName, args, ct);
+                    return FormatRepositoryDetail(result);
+
                 },
                 functionName: "get_repository",
                 description: "Belirli bir GitHub repository'sinin detaylarını getirir. owner ve repo parametreleri zorunludur"
@@ -164,24 +150,34 @@ Eğer araç çağrısında hata alırsan, hatayı kullanıcıya açıkla ve alte
             "list_commits" => KernelFunctionFactory.CreateFromMethod(
                 method: async (string owner, string repo) =>
                 {
-                    try
+                    var args = new Dictionary<string, object?>
+                    {
+                        ["owner"] = owner,
+                        ["repo"] = repo,
+                        ["branch"] = "main" // veya istediğin branch
+                    };
+                    var result = await _mcpService.CallToolAsync(toolName, args, ct);
+                    return FormatRepositoryDetail(result);
+
+                },
+                functionName: "list_commits",
+                description: "Belirli bir GitHub repository'sinin commitlerini getirir. owner ve repo parametreleri zorunludur"
+            ),
+
+            "list_issues" => KernelFunctionFactory.CreateFromMethod(
+                    method: async (string owner, string repo) =>
                     {
                         var args = new Dictionary<string, object?>
                         {
                             ["owner"] = owner,
-                            ["repo"] = repo,
-                            ["branch"] = "main" // veya istediğin branch
+                            ["repo"] = repo
                         };
                         var result = await _mcpService.CallToolAsync(toolName, args, ct);
                         return FormatRepositoryDetail(result);
-                    }
-                    catch (Exception ex)
-                    {
-                        return $"Repository detay hatası: {ex.Message}";
-                    }
-                },
-                functionName: "list_commits",
-                description: "Belirli bir GitHub repository'sinin detaylarını getirir. owner ve repo parametreleri zorunludur"
+
+                    },
+                    functionName: "list_issues",
+                    description: "Belirli bir GitHub repository'sinin issue listesini getirir. owner ve repo parametreleri zorunludur"
             ),
 
             _ => KernelFunctionFactory.CreateFromMethod(
