@@ -18,21 +18,34 @@ It demonstrates how to use MCP to bridge **GitHub data** (commits, pull requests
 GithubMCPDemo/
 
 ├── GithubMCPDemo.csproj # Project file
+
 ├── Program.cs # Entry point
+
 ├── Services/ # MCP server logic
+
 ├── Models/ # Data models for GitHub responses
+
 ├── Dockerfile # Docker build instructions
+
 ├── README.md # This file
 
 ---
 
 ## 🛠️ Requirements
 - [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download)
-- [Docker](https://www.docker.com/) (optional, for containerized run)
 - GitHub **Personal Access Token**
 - OpenAI API key
 
 ---
+
+## Demo
+
+![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/1.png)
+![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/3.png)
+![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/4.png)
+![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/5.png)
+![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/6.png)
+![Demo](https://github.com/mustafaalkan64/GithubMCPDemo/blob/master/DotnetCoreMCPDemo/SS/7.png)
 
 ## ⚙️ Setup
 
@@ -57,11 +70,6 @@ docker run -e GITHUB_TOKEN=your_github_token \
 💬 Example Chat Queries
 Once running, you can interact with the MCP server through your OpenAI client:
 
-User: Show me the last 5 commits in mustafaalkan64/GithubMCPDemo.
-AI: [Displays commit history with messages and authors]
-
-User: Summarize the README file in the repository.
-AI: [Generates a summary from the repo’s README.md]
 🧩 How It Works
 MCP Server handles requests to GitHub’s REST API.
 
